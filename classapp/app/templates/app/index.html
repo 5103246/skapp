@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>skapp</title>
+</head>
+<body>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <div id="app">
+        <h1>skapp</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>講義名</th>
+                    <th>教授名</th>
+                    <th>学部</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--入力行-->
+                <tr>
+                    <td>
+                        <input type="text" v-model="form.course_name">
+                    </td>
+                    <td>
+                        <input type="text" v-model="form.professor_name">
+                    </td>
+                    <td>
+                        <input type="text" v-model="form.department">
+                    </td>
+                    <td>
+                        <button @click="submit">送信</button>
+                    </td>
+                </tr>
+                <!--表示行-->
+                <tr v-for="course in courses" :key="course.id">
+                    <td>[[ course.course_name ]]</td>
+                    <td>[[ course.professor_name ]]</td>
+                    <td>[[ course.department ]]</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        const { createApp, onMounted, ref, reactive } = Vue
+
+        createApp({
+            setup() {
+                const courses = ref([])
+                const form = reactive({
+                    course_name: '',
+                    professor_name: '',
+                    department: '',
+                })
+                const getCourses = async () => {
+                    const res = await fetch('/api/get')
+                    const json = await res.json()
+                    courses.value = json.result
+                }
+                const submit = async () => {
+                    await fetch('/api/insert', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(form),
+                    })
+                    await getCourses()
+                }
+                onMounted(async () => {
+                    await getCourses()
+                })
+                return {courses, form, submit }
+            },
+            delimiters: ['[[',']]']
+        }).mount('#app')
+    </script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        table thead {
+            background-color: lightgray;
+        }
+    </style>
+</body>
+</html>
