@@ -34,7 +34,7 @@ class CourseView(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
-        courses = Course.objects.order_by("-id")
+        courses = Course.objects.filter(department=department_name).order_by("-id")
         serializer = CourseSerializer(courses, many=True)
         return Response({"result": serializer.data})
     def post(self, request):
