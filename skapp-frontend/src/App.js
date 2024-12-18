@@ -8,6 +8,7 @@ import RegisterForm from "./components/RegisterForm";
 import LoginView from "./components/LoginView";
 import ProtectedPage from "./components/UserPage";
 import HomePage from "./components/HomePage";
+import CourseCategory from "./components/CourseCategory";
 import { useAuth } from "./auth/AuthContext";
 import { AuthProvider } from "./auth/AuthContext";
 import './index.css';
@@ -20,7 +21,8 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/home" element={<HomePage />} />
-          <Route path="/course" element={<CourseList />} />
+          <Route path="/course/department/:department_name" element={<CourseList />} />
+          <Route path="/course" element={<CourseCategory />} />
           <Route path="/review" element={<ReviewForm />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/login" element={<LoginView />} />
