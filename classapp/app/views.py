@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, CourseSerializer, ReviewSerializer
+from rest_framework.permissions import AllowAny
 
 # Create your views here.
 def index(request):
@@ -17,6 +18,7 @@ def index(request):
 
 #@api_view(['POST'])
 class RegisterView(APIView):
+    permission_classes = [AllowAny]  # 認証不要に設定
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -33,7 +35,7 @@ class ProtectedRouteView(APIView):
 class CourseView(APIView):
     permission_classes = [IsAuthenticated]
     
-    def get(self, request):
+    def get(self, request, department_name):
         courses = Course.objects.filter(department=department_name).order_by("-id")
         serializer = CourseSerializer(courses, many=True)
         return Response({"result": serializer.data})
