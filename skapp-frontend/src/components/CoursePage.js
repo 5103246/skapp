@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../api/axiosInstance";
 import { useParams } from "react-router-dom";
-import { MdOutlineReply } from "react-icons/md/index.js";
+import { MdOutlineReply } from "react-icons/md";
 
 const CoursePage = (/*{ course_id }*/) => {
     const [course, setCourse] = useState(null);
