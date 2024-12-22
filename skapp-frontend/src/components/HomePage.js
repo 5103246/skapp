@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const departments = ["Science", "Arts", "Engineering", "Law"];
+  //const departments = ["Science", "Arts", "Engineering", "Law"];
     return (
         <div className="min-h-screen bg-gray-100">
           {/* ヘッダー */}

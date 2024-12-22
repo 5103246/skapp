@@ -9,6 +9,7 @@ import LoginView from "./components/LoginView";
 import ProtectedPage from "./components/UserPage";
 import HomePage from "./components/HomePage";
 import CourseCategory from "./components/CourseCategory";
+import CoursePage from "./components/CoursePage";
 import { useAuth } from "./auth/AuthContext";
 import { AuthProvider } from "./auth/AuthContext";
 import './index.css';
@@ -22,6 +23,7 @@ const App = () => {
         <Routes>
           <Route path="/home" element={<HomePage />} />
           <Route path="/course/department/:department_name" element={<CourseList />} />
+          <Route path="/course/:course_id" element={<CoursePage />} />
           <Route path="/course" element={<CourseCategory />} />
           <Route path="/review" element={<ReviewForm />} />
           <Route path="/register" element={<RegisterForm />} />

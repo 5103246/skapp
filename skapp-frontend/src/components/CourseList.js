@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../api/axiosInstance";
 import { useAuth } from "../auth/AuthContext";
 import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 const CourseList = () => {
     const [courses, setCourses] = useState([]);
     const { isAuthenticated } = useAuth();
     const { department_name } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -36,9 +38,15 @@ const CourseList = () => {
           <ul>
             {courses.map((course) => (
               <li key={course.id} className="mb-4 border p-2 rounded">
+                <button
+                          key={course.id}
+                          onClick={() => navigate(`/course/${course.id}`)}
+                          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                      >
                 <h3 className="text-xl font-semibold">{course.course_name}</h3>
                 <p>教授: {course.professor_name || "不明"}</p>
                 <p>学科: {course.department || "不明"}</p>
+                </button>
               </li>
             ))}
           </ul>
