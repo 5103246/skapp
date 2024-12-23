@@ -11,6 +11,11 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, CourseSerializer, ReviewSerializer, ReplySerializer
 from rest_framework.permissions import AllowAny
 #from rest_framework.exceptions import ValidationError
+from rest_framework_simplejwt.tokens import RefreshToken
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 # Create your views here.
 def index(request):
@@ -20,12 +25,22 @@ def index(request):
 #@api_view(['POST'])
 class RegisterView(APIView):
     permission_classes = [AllowAny]  # 認証不要に設定
+    
     def post(self, request):
+        logger.debug(f"Request data: {request.data}")
         serializer = UserSerializer(data=request.data)
+        
         if serializer.is_valid():
             user = serializer.save()
-            return Response({"id": user.id, "username": user.username}, status=status.HTTP_201_CREATED)
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                "id": user.id, 
+                "username": user.username,
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+                }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ProtectedRouteView(APIView):
     permission_classes = [IsAuthenticated]

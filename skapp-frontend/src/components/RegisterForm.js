@@ -20,10 +20,10 @@ const Register = () => {
             const response = await axiosInstace.post("/register/", formData);
             localStorage.setItem("access_token", response.data.access);
             localStorage.setItem("refresh_token", response.data.refresh);
-            navigate("/login");
+            navigate("/home");
             console.log("User registered:", response.data);
         } catch (error) {
-            console.error("Registration error:", error);
+            console.error("Registration error:", error.response.data);
         }
     };
 
