@@ -31,8 +31,9 @@ const CoursePage = (/*{ course_id }*/) => {
     // 返信を取得
     const fetchReplies = async (review_id) => {
         try {
-            const response = await axiosInstance.get(`/reviews/{review_id}/replies/`)
+            const response = await axiosInstance.get(`/reviews/${review_id}/replies/`)
             setReplies((prev) => ({ ...prev, [review_id]: response.data }));
+            console.log(response.data);
         } catch (error) {
             console.error("Error fetching replies:", error);
         }
@@ -48,7 +49,7 @@ const CoursePage = (/*{ course_id }*/) => {
         review_text: newReview,
         rating: rating,
       });
-      setReviews((prevReviews) => [response.data, ...prevReviews]);
+      setReviews((prevReviews) => [...prevReviews, response.data]);
       setNewReview(""); // フォームをリセット
       setRating(0);
     } catch (error) {
@@ -66,7 +67,7 @@ const CoursePage = (/*{ course_id }*/) => {
       });
       setReplies((prev) => ({
         ...prev,
-        [review_id]: [response.data, ...(prev[review_id] || [])],
+        [review_id]: [...(prev[review_id] || []), response.data],
       }));
       setNewReply("");
     } catch (error) {
@@ -139,7 +140,7 @@ const CoursePage = (/*{ course_id }*/) => {
                       <ul className="mb-2">
                         {(replies[review.id] || []).map((reply) => (
                           <li key={reply.id} className="border-b p-2">
-                            <p>{reply.content}</p>
+                            <p>{reply.reply_text}</p>
                             <small>投稿者: {reply.author || "匿名"}</small>
                           </li>
                         ))}

@@ -55,7 +55,7 @@ class CourseDetailView(APIView):
         try:
             course = Course.objects.get(id=course_id)
             serializer = CourseSerializer(course)
-            reviews = Review.objects.filter(course=course).order_by("-id")
+            reviews = Review.objects.filter(course=course).order_by("created_at")
             review_serializer = ReviewSerializer(reviews, many=True)
             
             return Response({
@@ -81,10 +81,12 @@ class CourseView(APIView):
 
 class ReviewView(APIView):
     permission_classes = [IsAuthenticated]
+    
     def get(self, request):
         reviews = Review.objects.order_by("-id")
         serializer = ReviewSerializer(reviews, many=True)
         return Response({"result": serializer.data})
+    
     def post(self, request, course_id):
         try:
             course = Course.objects.get(id=course_id)
@@ -96,7 +98,7 @@ class ReviewView(APIView):
             context={'course': course, 'user': request.user}
             )
         if serializer.is_valid():
-            serializer.save(course=course, user=request.user)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -105,7 +107,7 @@ class ReplyView(APIView):
 
     def get(self, request, review_id):
         """特定の感想に紐づく返信を取得"""
-        replies = Reply.objects.filter(review_id=review_id).order_by("-created_at")
+        replies = Reply.objects.filter(review_id=review_id).order_by("created_at")
         serializer = ReplySerializer(replies, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

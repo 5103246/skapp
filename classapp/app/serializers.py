@@ -32,9 +32,13 @@ class ReviewSerializer(serializers.ModelSerializer):
         """
         Create a new Review instance with course and user provided via context.
         """
+        """
         course = self.context.get('course')
         user = self.context.get('user')
-        return Review.objects.create(course=course, user=user, **validated_data)
+        """
+        validated_data['course'] = self.context['course']
+        validated_data['user'] = self.context['user']
+        return Review.objects.create(**validated_data)
     
 class ReplySerializer(serializers.ModelSerializer):
     author = serializers.CharField(source='user.username', read_only=True)
