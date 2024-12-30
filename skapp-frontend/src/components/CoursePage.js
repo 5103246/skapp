@@ -1,21 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axiosInstance from "../api/axiosInstance";
+import ReviewForm from "./ReviewForm";
+import ReviewList from "./ReviewList";
 import { useParams } from "react-router-dom";
-import { MdOutlineReply } from "react-icons/md";
 
-const CoursePage = (/*{ course_id }*/) => {
+
+const CoursePage = () => {
     const [course, setCourse] = useState(null);
     const [reviews, setReviews] = useState([]);
+    const { course_id } = useParams();
+    const [replies, setReplies] = useState([]); // Review IDごとの返信リスト
+
+    /*
     const [newReview, setNewReview] = useState("");
     const [rating, setRating] = useState(0);
     const [selectedReviewId, setSelectedReviewId] = useState(null); // 返信対象のReview ID
     const [replies, setReplies] = useState({}); // Review IDごとの返信リスト
-    const [newReply, setNewReply] = useState(""); // 新しい返信内容
-    const { course_id } = useParams();
-  
+    const [newReply, setNewReply] = useState(""); // 新しい返信内容*/
+    
     // 授業情報を取得
     useEffect(() => {
-      const fetchCourseDetails = async () => {
+      const fetchCourse = async () => {
         try {
           const response = await axiosInstance.get(`/courses/${course_id}/`);
           setCourse(response.data.course);
@@ -25,9 +30,44 @@ const CoursePage = (/*{ course_id }*/) => {
           console.error("Error fetching course details:", error);
         }
       };
-      fetchCourseDetails();
+      fetchCourse();
     }, [course_id]);
 
+    const fetchReplyList = useCallback(async (review_id) => {
+        if (!replies[review_id]) {
+            try {
+                const response = await axiosInstance.get(`/reviews/${review_id}/replies/`)
+                setReplies((prev) => ({ ...prev, [review_id]: response.data }));
+                console.log(response.data);
+            } catch (error) {
+                console.error("Error fetching replies:", error);
+            }
+        }
+    }, [replies]);
+
+    const handleReviewSubmit = (newReview) => {
+        setReviews((prevReviews) => [...prevReviews, newReview]);
+    };
+    
+    const handleReplySubmit = (review_id, newReply) => {
+        setReplies((prev) => ({
+            ...prev,
+            [review_id]: [...(prev[review_id] || []), newReply],
+          }));
+        /*
+        setReviews(prevReviews =>
+            prevReviews.map(review =>
+                review.id === review_id
+                    ? {
+                        ...review,
+                        replies: [...(review.replies || []), newReply]
+                    }
+                    : review
+            )
+        );
+        */
+    };
+/*
     // 返信を取得
     const fetchReplies = async (review_id) => {
         try {
@@ -89,8 +129,23 @@ const CoursePage = (/*{ course_id }*/) => {
       </button>
     ));
   };
-
+*/
   return (
+    <div className="p-4">
+      {course ? (
+        <>
+          <h1 className="text-2xl font-bold">{course.course_name}</h1>
+          <p>教授: {course.professor_name || "不明"}</p>
+          <p>学科: {course.department || "不明"}</p>
+
+          <ReviewForm course_id={course_id} onReviewSubmit={handleReviewSubmit} />
+          <ReviewList reviews={reviews} replies={replies} fetchReplyList={fetchReplyList} onReplySubmit={handleReplySubmit} />
+        </>
+      ) : (
+        <p>授業情報を読み込んでいます...</p>
+      )}
+    </div>
+    /*
     <div className="p-4">
       {course ? (
         <>
@@ -183,7 +238,7 @@ const CoursePage = (/*{ course_id }*/) => {
       ) : (
         <p>授業情報を読み込んでいます...</p>
       )}
-    </div>
+    </div>*/
   );
 };
 

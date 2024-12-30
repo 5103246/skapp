@@ -1,76 +1,60 @@
 import React, { useState } from "react";
 import axiosInstance from "../api/axiosInstance";
 
-const ReviewForm = () => {
-    const [formData, setFormData] = useState({
-      user : "",
-      course: "",
-      rating: "",
-      review_text: "",
-    });
-  
+const ReviewForm = ({ course_id, onReviewSubmit }) => {
+    const [newReview, setNewReview] = useState("");
+    const [rating, setRating] = useState(0);
+
     const handleSubmit = async (e) => {
-      e.preventDefault();
-      try {
-        await axiosInstance.post("/reviews/", formData);
-        alert("評価が送信されました！");
-        setFormData({ user: "", course: "", rating: "", review_text: "" });
-      } catch (error) {
-        console.error("Error submitting review:", error);
-      }
+        e.preventDefault();
+        if (!newReview.trim() || rating === 0) return;
+
+        try {
+            const response = await axiosInstance.post(`/courses/${course_id}/reviews/`, {
+                review_text: newReview,
+                rating: rating,
+            });
+            /*
+            setReviews((prevReviews) => [...prevReviews, response.data]);
+            */
+            onReviewSubmit(response.data);
+            setNewReview(""); // フォームをリセット
+            setRating(0);
+        } catch (error) {
+            console.error("Error submitting review:", error);
+        }
     };
-  
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData((prevData) => ({ ...prevData, [name]: value }));
+
+    const renderStars = () => {
+        return Array.from({ length: 5 }, (_, index) => (
+            <button
+                key={index}
+                onClick={() => setRating(index + 1)}
+                className={`text-2xl ${index < rating ? "text-yellow-500" : "text-gray-300"
+                    }`}
+            >
+                ★
+            </button>
+        ));
     };
-  
+
     return (
-      <form onSubmit={handleSubmit}>
-        <h1>授業評価フォーム</h1>
-        <label>
-            ユーザーID:
-            <input
-            type="text"
-            name="user"
-            value={formData.user}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <label>
-          授業ID:
-          <input
-            type="text"
-            name="course"
-            value={formData.course}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <label>
-          評価 (1～5):
-          <input
-            type="number"
-            name="rating"
-            value={formData.rating}
-            onChange={handleChange}
-            min="1"
-            max="5"
-            required
-          />
-        </label>
-        <label>
-          感想:
-          <textarea
-            name="review_text"
-            value={formData.review_text}
-            onChange={handleChange}
-          />
-        </label>
-        <button type="submit">送信</button>
-      </form>
+        <form onSubmit={handleSubmit} className="mt-4">
+            <textarea
+                value={newReview}
+                onChange={(e) => setNewReview(e.target.value)}
+                className="w-full p-2 border rounded"
+                placeholder="感想を入力してください..."
+            />
+            <div className="mt-2">{renderStars()}</div>
+            <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+            >
+                投稿
+            </button>
+        </form>
     );
-  };
-  
+};
+
 export default ReviewForm;

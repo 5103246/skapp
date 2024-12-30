@@ -16,13 +16,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
 # Create your views here.
 def index(request):
     context = {}
     return render(request, "app/index.html", context)
 
-#@api_view(['POST'])
 class RegisterView(APIView):
     permission_classes = [AllowAny]  # 認証不要に設定
     
