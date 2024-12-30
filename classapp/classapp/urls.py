@@ -21,10 +21,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path('api/insert', views.insert_course),
-    #path('api/get', views.get_course),
-    #path('api/insert_review', views.insert_review),
-    #path('api/get_review', views.get_review),
     path('courses/department/<str:department_name>/', views.CourseView.as_view(), name='course_list'),
     path('courses/create/', views.CourseView.as_view(), name='create_course'),
     path('courses/<int:course_id>/', views.CourseDetailView.as_view(), name='course_detail'),
@@ -34,5 +30,4 @@ urlpatterns = [
     path('users/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('users/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('protected-route/', views.ProtectedRouteView.as_view(), name='protected_route'),
-    path('', views.index),
 ]
