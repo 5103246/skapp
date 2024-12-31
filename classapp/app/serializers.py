@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User, Course, Review, Reply
+from rest_framework.exceptions import ValidationError
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,29 +22,41 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = ['id', 'course_name', 'professor_name', 'department']
 
 class ReviewSerializer(serializers.ModelSerializer):
-    author = serializers.CharField(source='user.username', read_only=True)
+    author_name = serializers.CharField(source='user.username', read_only=True)
+    author_id = serializers.IntegerField(source='user.id', read_only=True)
     
     class Meta:
         model = Review
-        fields = ['id', 'review_text', 'rating', 'author', 'created_at']
+        fields = ['id', 'review_text', 'rating', 'author_id', 'author_name', 'created_at']
         read_only_fields = ['course', 'user']
+        
+    def validate(self, data):
+        user = self.context.get('user')
+        course = self.context.get('course')
+        
+        if not course:
+            raise ValidationError("Course is required.")
+        
+        # ユーザーがすでにレビューを投稿しているか確認
+        if Review.objects.filter(course=course, user=user).exists():
+            raise ValidationError("この授業に対する感想と評価は既に投稿済みです。")
+        return data
 
     def create(self, validated_data):
-        """
-        Create a new Review instance with course and user provided via context.
-        """
-        """
-        course = self.context.get('course')
-        user = self.context.get('user')
-        """
+        
+        #Create a new Review instance with course and user provided via context.
+        #course = self.context.get('course')
+        #user = self.context.get('user')
+       
         validated_data['course'] = self.context['course']
         validated_data['user'] = self.context['user']
         return Review.objects.create(**validated_data)
     
 class ReplySerializer(serializers.ModelSerializer):
-    author = serializers.CharField(source='user.username', read_only=True)
+    author_name = serializers.CharField(source='user.username', read_only=True)
+    author_id = serializers.IntegerField(source='user.id', read_only=True)
     
     class Meta:
         model = Reply
-        fields = ['id', 'reply_text', 'author', 'created_at']
+        fields = ['id', 'reply_text', 'author_id', 'author_name', 'created_at']
         

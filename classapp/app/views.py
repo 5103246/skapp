@@ -16,7 +16,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Create your views here.
+class CurrentUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+        })
+
 class RegisterView(APIView):
     permission_classes = [AllowAny]  # 認証不要に設定
     
@@ -76,8 +86,12 @@ class CourseView(APIView):
 class ReviewView(APIView):
     permission_classes = [IsAuthenticated]
     
-    def get(self, request):
-        reviews = Review.objects.order_by("-id")
+    def get(self, request, course_id):
+        try:
+            course = Course.objects.get(id=course_id)
+        except:
+            return Response({"error": "Course not found"}, status=status.HTTP_404_NOT_FOUND)
+        reviews = Review.objects.filter(course=course).order_by("-id")
         serializer = ReviewSerializer(reviews, many=True)
         return Response({"result": serializer.data})
     

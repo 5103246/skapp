@@ -26,6 +26,7 @@ urlpatterns = [
     path('courses/<int:course_id>/', views.CourseDetailView.as_view(), name='course_detail'),
     path('courses/<int:course_id>/reviews/', views.ReviewView.as_view(), name='course_review'),
     path('reviews/<int:review_id>/replies/', views.ReplyView.as_view(), name='reply_list_create'),
+    path('auth/user/', views.CurrentUserView.as_view(), name='current_user'),
     path('register/', views.RegisterView.as_view(), name='register'),
     path('users/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('users/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
