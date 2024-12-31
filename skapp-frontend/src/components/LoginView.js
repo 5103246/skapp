@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axiosInstace from "../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import AuthContext from "../auth/AuthContext"
 
 
 const Login = () => {
@@ -10,6 +11,7 @@ const Login = () => {
         password: "",
     });
     const navigate = useNavigate();
+    const { currentUser, setCurrentUser } = useContext(AuthContext);
     const { login } = useAuth();
 
     const handleChange = (e) => {
@@ -22,6 +24,9 @@ const Login = () => {
             const response = await axiosInstace.post("/users/token/", formData);
             localStorage.setItem("access_token", response.data.access);
             localStorage.setItem("refresh_token", response.data.refresh);
+            const userResponse = await axiosInstace.get("/auth/user/");
+            setCurrentUser(userResponse.data);
+            console.log(currentUser);
             login();
             navigate("/home");
             //console.log(localStorage.getItem("access_token"));
