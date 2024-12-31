@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axiosInstace from '../api/axiosInstance';
 import { useNavigate } from "react-router-dom";
+import AuthContext from "../auth/AuthContext"
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -9,6 +10,7 @@ const Register = () => {
         password: "",
     });
     const navigate = useNavigate();
+    const { currentUser, setCurrentUser } = useContext(AuthContext);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,6 +22,9 @@ const Register = () => {
             const response = await axiosInstace.post("/register/", formData);
             localStorage.setItem("access_token", response.data.access);
             localStorage.setItem("refresh_token", response.data.refresh);
+            const userResponse = await axiosInstace.get("/auth/user/");
+            setCurrentUser(userResponse.data);
+            console.log(currentUser);
             navigate("/home");
             console.log("User registered:", response.data);
         } catch (error) {

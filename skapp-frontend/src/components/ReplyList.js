@@ -26,7 +26,7 @@ const ReplyList = ({ review_id, replies, fetchReplyList }) => {
             {(replies[`${review_id}`] || []).map((reply) => (
                 <li key={reply.id} className="border-b p-2">
                     <p>{reply.reply_text}</p>
-                    <small>投稿者: {reply.author || "匿名"}</small>
+                    <small>投稿者: {reply.author_name || "匿名"}</small>
                 </li>
             ))}
         </ul>

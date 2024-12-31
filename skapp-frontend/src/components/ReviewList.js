@@ -33,7 +33,7 @@ const ReviewList = ({ reviews, replies, fetchReplyList, onReplySubmit }) => {
                                 </span>
                             ))}
                         </div>
-                        <small>投稿者: {review.author || "匿名"}</small>
+                        <small>投稿者: {review.author_name || "匿名"}</small>
 
                         {/* 返信セクションの表示/非表示切り替えボタン */}
                         <button

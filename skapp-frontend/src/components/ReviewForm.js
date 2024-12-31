@@ -14,6 +14,7 @@ const ReviewForm = ({ course_id, onReviewSubmit }) => {
                 review_text: newReview,
                 rating: rating,
             });
+            console.log(response.data);
             /*
             setReviews((prevReviews) => [...prevReviews, response.data]);
             */
