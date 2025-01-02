@@ -110,6 +110,36 @@ class ReviewView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class ReviewDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, review_id):
+        """特定の感想に紐づく返信を取得"""
+        review = Review.objects.filter(id=review_id)
+        serializer = ReviewSerializer(review, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request, review_id):
+        
+        try:
+            review = Review.objects.get(id=review_id, user=request.user)
+        except Review.DoesNotExist:
+            return Response({"error": "Review not found or you do not have permission to edit it."}, status=404)
+        print(request.data)
+        serializer = ReviewSerializer(review, data=request.data, partial=True, context={'user': request.user})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, review_id):
+        try:
+            review = Review.objects.get(id=review_id, user=request.user)
+            review.delete()
+            return Response({"message": "Review deleted successfully."}, status=204)
+        except Review.DoesNotExist:
+            return Response({"error": "Review not found or you do not have permission to delete it."}, status=404)
+
 class ReplyView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -131,3 +161,26 @@ class ReplyView(APIView):
             serializer.save(user=request.user, review=review)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ReplyDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def patch(self, request, reply_id):
+        try:
+            reply = Reply.objects.get(id=reply_id, user=request.user)
+        except Reply.DoesNotExist:
+            return Response({"error": "Reply not found or you do not have permission to edit it."}, status=404)
+        
+        serializer = ReplySerializer(reply, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, reply_id):
+        try:
+            reply = Reply.objects.get(id=reply_id, user=request.user)
+            reply.delete()
+            return Response({"message": "Reply deleted successfully."}, status=204)
+        except Review.DoesNotExist:
+            return Response({"error": "Reply not found or you do not have permission to delete it."}, status=404)

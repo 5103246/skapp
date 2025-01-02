@@ -33,17 +33,24 @@ class ReviewSerializer(serializers.ModelSerializer):
     def validate(self, data):
         user = self.context.get('user')
         course = self.context.get('course')
-        
+        # 編集の場合はcourseを必須にしない
+        if self.instance is None and not course:
+            raise ValidationError("Course is required.")
+
+        # 新規作成時のみ、既存レビューをチェック
+        if not self.instance and Review.objects.filter(course=course, user=user).exists():
+            raise ValidationError("この授業に対する感想と評価は既に投稿済みです。")
+        # 下のコードが原因で、感想を編集するときに、400エラーが起きた。編集送信の際、courseが含まれていなかったためエラーが起きた。
+        """
         if not course:
             raise ValidationError("Course is required.")
         
         # ユーザーがすでにレビューを投稿しているか確認
         if Review.objects.filter(course=course, user=user).exists():
-            raise ValidationError("この授業に対する感想と評価は既に投稿済みです。")
+            raise ValidationError("この授業に対する感想と評価は既に投稿済みです。")"""
         return data
 
     def create(self, validated_data):
-        
         #Create a new Review instance with course and user provided via context.
         #course = self.context.get('course')
         #user = self.context.get('user')

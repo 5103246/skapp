@@ -13,6 +13,7 @@ const CoursePage = () => {
     const [replies, setReplies] = useState([]); // Review IDごとの返信リスト
     const [hasReviewed, setHasReviewed] = useState(false); // reviewがすでにあるか確認 追加
     const { currentUser } = useContext(AuthContext);
+    console.log(course);
 
     // 授業情報を取得
     useEffect(() => {
@@ -25,6 +26,7 @@ const CoursePage = () => {
                 setCourse(response.data.course);
                 setReviews(response.data.reviews); // 授業の感想一覧を取得
                 console.log(response.data);
+                console.log(response.data.reviews);
             } catch (error) {
                 console.error("Error fetching course details:", error);
             }
@@ -69,7 +71,7 @@ const CoursePage = () => {
                     ) : (
                         <p>この授業への感想と評価は既に投稿済みです。</p>
                     )}
-                    <ReviewList reviews={reviews} replies={replies} fetchReplyList={fetchReplyList} onReplySubmit={handleReplySubmit} />
+                    <ReviewList reviews={reviews} setReviews={setReviews} replies={replies} setReplies={setReplies} fetchReplyList={fetchReplyList} onReplySubmit={handleReplySubmit} />
                 </>
             ) : (
                 <p>授業情報を読み込んでいます...</p>

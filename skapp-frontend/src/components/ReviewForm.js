@@ -15,9 +15,6 @@ const ReviewForm = ({ course_id, onReviewSubmit }) => {
                 rating: rating,
             });
             console.log(response.data);
-            /*
-            setReviews((prevReviews) => [...prevReviews, response.data]);
-            */
             onReviewSubmit(response.data);
             setNewReview(""); // フォームをリセット
             setRating(0);
