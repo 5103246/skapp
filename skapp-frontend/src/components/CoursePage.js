@@ -4,6 +4,7 @@ import ReviewForm from "./ReviewForm";
 import ReviewList from "./ReviewList";
 import AuthContext from "../auth/AuthContext"
 import { useParams } from "react-router-dom";
+import Header from './Header';
 
 
 const CoursePage = () => {
@@ -59,23 +60,26 @@ const CoursePage = () => {
     };
 
     return (
-        <div className="p-4">
-            {course ? (
-                <>
-                    <h1 className="text-2xl font-bold">{course.course_name}</h1>
-                    <p>教授: {course.professor_name || "不明"}</p>
-                    <p>学科: {course.department || "不明"}</p>
+        <div className="min-h-screen bg-gray-100">
+            <Header />
+            <div className="p-4">
+                {course ? (
+                    <>
+                        <h1 className="text-2xl font-bold">{course.course_name}</h1>
+                        <p>教授: {course.professor_name || "不明"}</p>
+                        <p>学科: {course.department || "不明"}</p>
 
-                    {!hasReviewed ? (
-                        <ReviewForm course_id={course_id} onReviewSubmit={handleReviewSubmit} />
-                    ) : (
-                        <p>この授業への感想と評価は既に投稿済みです。</p>
-                    )}
-                    <ReviewList reviews={reviews} setReviews={setReviews} replies={replies} setReplies={setReplies} fetchReplyList={fetchReplyList} onReplySubmit={handleReplySubmit} />
-                </>
-            ) : (
-                <p>授業情報を読み込んでいます...</p>
-            )}
+                        {!hasReviewed ? (
+                            <ReviewForm course_id={course_id} onReviewSubmit={handleReviewSubmit} />
+                        ) : (
+                            <p>この授業への感想と評価は既に投稿済みです。</p>
+                        )}
+                        <ReviewList reviews={reviews} setReviews={setReviews} replies={replies} setReplies={setReplies} fetchReplyList={fetchReplyList} onReplySubmit={handleReplySubmit} />
+                    </>
+                ) : (
+                    <p>授業情報を読み込んでいます...</p>
+                )}
+            </div>
         </div>
     );
 };
