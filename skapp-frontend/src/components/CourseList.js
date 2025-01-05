@@ -27,7 +27,7 @@ const CourseList = () => {
         if (isAuthenticated) {
             fetchCourses();
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, department_name]);
 
     if (!isAuthenticated) {
         return <Navigate to="/login" />;

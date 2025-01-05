@@ -43,10 +43,10 @@ const ReplyList = ({ review_id, replies, setReplies, fetchReplyList }) => {
                 reply_text: editedReply,
             });
             console.log(response.data);
-            setReplies((prevReplies) =>  ({
+            setReplies((prevReplies) => ({
                 ...prevReplies,
                 [review_id]: prevReplies[review_id].map((reply) =>
-                  reply.id === reply_id ? { ...reply, ...response.data } : reply
+                    reply.id === reply_id ? { ...reply, ...response.data } : reply
                 ),
             })
                 /*
@@ -75,30 +75,39 @@ const ReplyList = ({ review_id, replies, setReplies, fetchReplyList }) => {
         }
     };
     return (
-        <ul className="mb-2">
-            {(replies[`${review_id}`] || []).map((reply) => (
-                <li key={reply.id} className="border-b p-2">
-                    {editingReplyId === reply.id ? (
-                        <div>
-                            <textarea
-                                value={editedReply}
-                                onChange={(e) => setEditedReply(e.target.value)}
-                                className="w-full p-2 border rounded"
-                            />
-                            <button onClick={() => handleEditSubmit(reply.id)}>Save</button>
-                            <button onClick={cancelEditing}>Cancel</button>
-                        </div>
-                    ) : (
-                        <div>
-                            <p>{reply.reply_text}</p>
-                            <small>投稿者: {reply.author_name || "匿名"}</small>
-                            <button onClick={() => startEditing(reply)} className="bg-blue-500 text-white px-4 py-2 rounded mt-2">Edit</button>
-                            <button onClick={() => handleDelete(reply.id)} className="bg-blue-500 text-white px-4 py-2 rounded mt-2">Delete</button>
-                        </div>
-                    )}
-                </li>
-            ))}
-        </ul>
+        <section className="container mx-auto my-6">
+            <h2 className="text-xl font-bold mb-4">Replies</h2>
+            <div className="space-y-4">
+                <ul className="mb-2">
+                    {(replies[`${review_id}`] || []).map((reply) => (
+                        <li key={reply.id} className="border-b p-2">
+                            {editingReplyId === reply.id ? (
+                                <div>
+                                    <textarea
+                                        value={editedReply}
+                                        onChange={(e) => setEditedReply(e.target.value)}
+                                        className="w-full p-2 border rounded"
+                                    />
+                                    <button onClick={() => handleEditSubmit(reply.id)} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">Save</button>
+                                    <button onClick={cancelEditing} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">Cancel</button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <div className="flex justify-between items-center">
+                                        <small className="text-lg font-semibold">投稿者: {reply.author_name || "匿名"}</small>
+                                        <div className="flex items-center space-x-2">
+                                            <button onClick={() => startEditing(reply)} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">Edit</button>
+                                            <button onClick={() => handleDelete(reply.id)} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">Delete</button>
+                                        </div>
+                                    </div>
+                                    <p className="mt-2 text-gray-700">{reply.reply_text}</p>
+                                </div>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </section >
     );
 };
 

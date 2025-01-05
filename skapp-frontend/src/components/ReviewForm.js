@@ -37,21 +37,26 @@ const ReviewForm = ({ course_id, onReviewSubmit }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="mt-4">
-            <textarea
-                value={newReview}
-                onChange={(e) => setNewReview(e.target.value)}
-                className="w-full p-2 border rounded"
-                placeholder="感想を入力してください..."
-            />
-            <div className="mt-2">{renderStars()}</div>
-            <button
-                type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
-            >
-                投稿
-            </button>
-        </form>
+        <section className="container mx-auto my-6">
+            <div className="bg-gray-100 shadow-md rounded-lg p-6">
+                <h2 className="text-xl font-bold mb-4">Submit Your Review</h2>
+                <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+                    <textarea
+                        value={newReview}
+                        onChange={(e) => setNewReview(e.target.value)}
+                        className="w-full p-3 rounded-md border border-gray-300"
+                        placeholder="感想を入力してください..."
+                    />
+                    <div className="mt-2">{renderStars()}</div>
+                    <button
+                        type="submit"
+                        className="bg-blue-500 text-white px-4 py-2 rounded mt-2 rounded-md hover:bg-blue-700"
+                    >
+                        投稿
+                    </button>
+                </form>
+            </div>
+        </section>
     );
 };
 

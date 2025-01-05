@@ -78,12 +78,13 @@ const ReviewList = ({ reviews, setReviews, replies, setReplies, fetchReplyList, 
     };
 
     return (
-        <div className="mt-4">
-            <h2 className="text-xl font-semibold">感想と評価一覧</h2>
-            <ul className="mt-2">
-                {reviews.map((review) => (
-                    <li key={review.id} className="border p-2 mb-2 rounded">
-                        {/* 
+        <section className="container mx-auto my-6">
+            <div className="mt-4">
+                <h2 className="text-xl font-semibold mb-4">感想と評価一覧</h2>
+                <ul className="mt-2">
+                    {reviews.map((review) => (
+                        <li key={review.id} className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
+                            {/* 
                         <p>{review.review_text}</p>
                         <div className="flex items-center">
                             <span className="mr-2">評価:</span>
@@ -100,16 +101,16 @@ const ReviewList = ({ reviews, setReviews, replies, setReplies, fetchReplyList, 
                             ))}
                         </div>
                         <small>投稿者: {review.author_name || "匿名"}</small>*/}
-                        {/* 感想と評価の編集 */}
-                        {editingReviewId === review.id ? (
-                            <div>
-                                <textarea
-                                    value={editedReview}
-                                    onChange={(e) => setEditedReview(e.target.value)}
-                                    className="w-full p-2 border rounded"
-                                />
-                                <div className="mt-2">{renderStars()}</div>
-                                {/* 
+                            {/* 感想と評価の編集 */}
+                            {editingReviewId === review.id ? (
+                                <div>
+                                    <textarea
+                                        value={editedReview}
+                                        onChange={(e) => setEditedReview(e.target.value)}
+                                        className="w-full p-2 border rounded"
+                                    />
+                                    <div className="mt-2">{renderStars()}</div>
+                                    {/* 
                                 <input
                                     type="number"
                                     value={editedReview.rating}
@@ -121,59 +122,62 @@ const ReviewList = ({ reviews, setReviews, replies, setReplies, fetchReplyList, 
                                     }
                                 />
                                 */}
-                                <button onClick={() => handleEditSubmit(review.id)}>Save</button>
-                                <button onClick={cancelEditing}>Cancel</button>
-                            </div>
-                        ) : (
-                            <div>
-                                <p>{review.review_text}</p>
-                                <div className="flex items-center">
-                                    <span className="mr-2">評価:</span>
-                                    {Array.from({ length: 5 }, (_, index) => (
-                                        <span
-                                            key={index}
-                                            className={`text-lg ${index < review.rating
-                                                ? "text-yellow-500"
-                                                : "text-gray-300"
-                                                }`}
-                                        >
-                                            ★
-                                        </span>
-                                    ))}
+                                    <button onClick={() => handleEditSubmit(review.id)} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">Save</button>
+                                    <button onClick={cancelEditing} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">Cancel</button>
                                 </div>
-                                <small>投稿者: {review.author_name || "匿名"}</small>
-                                <button onClick={() => startEditing(review)} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">編集</button>
-                                <button onClick={() => handleDelete(review.id)} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">削除</button>
-                            </div>
-                        )}
+                            ) : (
+                                <div>
+                                    <div className="flex justify-between items-center">
+                                        <small className="text-lg font-semibold">投稿者: {review.author_name || "匿名"}</small>
+                                        <div className="flex items-center">
+                                            <span className="mr-2">評価:</span>
+                                            {Array.from({ length: 5 }, (_, index) => (
+                                                <span
+                                                    key={index}
+                                                    className={`text-lg ${index < review.rating
+                                                        ? "text-yellow-500"
+                                                        : "text-gray-300"
+                                                        }`}
+                                                >
+                                                    ★
+                                                </span>
+                                            ))}
+                                            <button onClick={() => startEditing(review)} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">編集</button>
+                                            <button onClick={() => handleDelete(review.id)} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">削除</button>
+                                        </div>
+                                    </div>
+                                    <p className="mt-2 text-gray-700">{review.review_text}</p>
+                                </div>
+                            )}
 
-                        {/* 返信セクションの表示/非表示切り替えボタン */}
-                        <button
-                            onClick={() => {
-                                if (selectedReviewId === review.id) {
-                                    setSelectedReviewId(null); // 返信セクション非表示
-                                } else {
-                                    setSelectedReviewId(review.id); // 返信セクション表示
-                                    fetchReplies(review.id);
-                                }
-                            }}
-                            className="text-blue-500 text-sm flex items-center mt-2"
-                        >
-                            <MdOutlineReply className="mr-1" />
-                            返信
-                        </button>
+                            {/* 返信セクションの表示/非表示切り替えボタン */}
+                            <button
+                                onClick={() => {
+                                    if (selectedReviewId === review.id) {
+                                        setSelectedReviewId(null); // 返信セクション非表示
+                                    } else {
+                                        setSelectedReviewId(review.id); // 返信セクション表示
+                                        fetchReplies(review.id);
+                                    }
+                                }}
+                                className="text-blue-500 text-sm flex items-center mt-2"
+                            >
+                                <MdOutlineReply className="mr-1" />
+                                返信
+                            </button>
 
-                        {/* 返信セクション */}
-                        {selectedReviewId === review.id && (
-                            <>
-                                <ReplyList review_id={review.id} replies={replies} setReplies={setReplies} fetchReplyList={fetchReplyList} />
-                                <ReplyForm review_id={review.id} onReplySubmit={onReplySubmit} />
-                            </>
-                        )}
-                    </li>
-                ))}
-            </ul>
-        </div>
+                            {/* 返信セクション */}
+                            {selectedReviewId === review.id && (
+                                <>
+                                    <ReplyForm review_id={review.id} onReplySubmit={onReplySubmit} />
+                                    <ReplyList review_id={review.id} replies={replies} setReplies={setReplies} fetchReplyList={fetchReplyList} />
+                                </>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </section>
     );
 };
 

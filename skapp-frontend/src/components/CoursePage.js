@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
+//import { Button } from '@shadcn/ui/button';
 import axiosInstance from "../api/axiosInstance";
 import ReviewForm from "./ReviewForm";
 import ReviewList from "./ReviewList";
@@ -65,19 +67,33 @@ const CoursePage = () => {
             <div className="p-4">
                 {course ? (
                     <>
-                        <h1 className="text-2xl font-bold">{course.course_name}</h1>
-                        <p>教授: {course.professor_name || "不明"}</p>
-                        <p>学科: {course.department || "不明"}</p>
+                        <Card className="bg-blue-600 text-white mb-4">
+                            <CardHeader>
+                                <CardTitle className="text-2xl font-bold">{course.course_name}</CardTitle>
+                                <CardDescription>
+                                    <p className="mt-2">教授: {course.professor_name || "不明"}</p>
+                                    <p>学科: {course.department || "不明"}</p>
+                                </CardDescription>
+                            </CardHeader>
+                        </Card>
 
                         {!hasReviewed ? (
                             <ReviewForm course_id={course_id} onReviewSubmit={handleReviewSubmit} />
                         ) : (
-                            <p>この授業への感想と評価は既に投稿済みです。</p>
+                            <Card className="mb-4">
+                                <CardContent>
+                                    <p>この授業への感想と評価は既に投稿済みです。</p>
+                                </CardContent>
+                            </Card>
                         )}
                         <ReviewList reviews={reviews} setReviews={setReviews} replies={replies} setReplies={setReplies} fetchReplyList={fetchReplyList} onReplySubmit={handleReplySubmit} />
                     </>
                 ) : (
-                    <p>授業情報を読み込んでいます...</p>
+                    <Card className="mb-4">
+                        <CardContent>
+                            <p>授業情報を読み込みんでいます...</p>
+                        </CardContent>
+                    </Card>
                 )}
             </div>
         </div>
