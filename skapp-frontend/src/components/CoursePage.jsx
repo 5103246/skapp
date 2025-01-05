@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 //import { Button } from '@shadcn/ui/button';
 import axiosInstance from "../api/axiosInstance";
 import ReviewForm from "./ReviewForm";
@@ -70,11 +70,11 @@ const CoursePage = () => {
                         <Card className="bg-blue-600 text-white mb-4">
                             <CardHeader>
                                 <CardTitle className="text-2xl font-bold">{course.course_name}</CardTitle>
-                                <CardDescription>
-                                    <p className="mt-2">教授: {course.professor_name || "不明"}</p>
-                                    <p>学科: {course.department || "不明"}</p>
-                                </CardDescription>
                             </CardHeader>
+                            <CardContent>
+                                <p className="mt-2">教授: {course.professor_name || "不明"}</p>
+                                <p>学科: {course.department || "不明"}</p>
+                            </CardContent>
                         </Card>
 
                         {!hasReviewed ? (
@@ -91,7 +91,7 @@ const CoursePage = () => {
                 ) : (
                     <Card className="mb-4">
                         <CardContent>
-                            <p>授業情報を読み込みんでいます...</p>
+                            <p>授業情報を読み込んでいます...</p>
                         </CardContent>
                     </Card>
                 )}
