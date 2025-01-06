@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../api/axiosInstance';
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { FaEdit, FaTrash } from "react-icons/fa"
+import { MdOutlineCancel, MdOutlineSaveAlt } from "react-icons/md";
 
 const ReplyList = ({ review_id, replies, setReplies, fetchReplyList }) => {
     //const [replies, setReplies] = useState([]);
@@ -43,10 +47,10 @@ const ReplyList = ({ review_id, replies, setReplies, fetchReplyList }) => {
                 reply_text: editedReply,
             });
             console.log(response.data);
-            setReplies((prevReplies) =>  ({
+            setReplies((prevReplies) => ({
                 ...prevReplies,
                 [review_id]: prevReplies[review_id].map((reply) =>
-                  reply.id === reply_id ? { ...reply, ...response.data } : reply
+                    reply.id === reply_id ? { ...reply, ...response.data } : reply
                 ),
             })
                 /*
@@ -75,30 +79,53 @@ const ReplyList = ({ review_id, replies, setReplies, fetchReplyList }) => {
         }
     };
     return (
-        <ul className="mb-2">
+        <div className="space-y-4">
             {(replies[`${review_id}`] || []).map((reply) => (
-                <li key={reply.id} className="border-b p-2">
-                    {editingReplyId === reply.id ? (
-                        <div>
-                            <textarea
-                                value={editedReply}
-                                onChange={(e) => setEditedReply(e.target.value)}
-                                className="w-full p-2 border rounded"
-                            />
-                            <button onClick={() => handleEditSubmit(reply.id)}>Save</button>
-                            <button onClick={cancelEditing}>Cancel</button>
-                        </div>
-                    ) : (
-                        <div>
-                            <p>{reply.reply_text}</p>
-                            <small>投稿者: {reply.author_name || "匿名"}</small>
-                            <button onClick={() => startEditing(reply)} className="bg-blue-500 text-white px-4 py-2 rounded mt-2">Edit</button>
-                            <button onClick={() => handleDelete(reply.id)} className="bg-blue-500 text-white px-4 py-2 rounded mt-2">Delete</button>
-                        </div>
-                    )}
-                </li>
+                <Card key={reply.id} className="hover:bg-gray-50 transition duration-200">
+                    <CardContent className="p-4">
+                        {editingReplyId === reply.id ? (
+                            <div>
+                                <textarea
+                                    value={editedReply}
+                                    onChange={(e) => setEditedReply(e.target.value)}
+                                    className="w-full p-2 border rounded"
+                                />
+                                <Button variant="ghost" size="sm" onClick={() => handleEditSubmit(reply.id)}>
+                                    <MdOutlineSaveAlt className="mr-2" /> Save
+                                </Button>
+                                <Button variant="ghost" size="sm" onClick={cancelEditing}>
+                                    <MdOutlineCancel className="mr-2" /> Cancel
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="flex items-start space-x-3">
+                                <div className="flex-shrink-0">
+                                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                        <span className="text-gray-600 font-bold text-sm">学</span>
+                                    </div>
+                                </div>
+                                <div className="flex-grow">
+                                    <div className="flex items-center space-x-2">
+                                        <span className="font-bold">{reply.author_name || "匿名"}</span>
+                                        <span className="text-gray-500 text-sm">・</span>
+                                        <span className="text-gray-500 text-sm">{reply.created_at}</span>
+                                    </div>
+                                    <p className="mt-1">{reply.reply_text}</p>
+                                    <div className="flex items-center justify-end mt-3">
+                                        <Button variant="ghost" size="sm" onClick={() => startEditing(reply)}>
+                                            <FaEdit className="mr-2" /> 編集
+                                        </Button>
+                                        <Button variant="ghost" size="sm" onClick={() => handleDelete(reply.id)}>
+                                            <FaTrash className="mr-2" /> 削除
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
             ))}
-        </ul>
+        </div>
     );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-//import { Button } from '@shadcn/ui/button';
+import { FaGraduationCap, FaUniversity } from "react-icons/fa"
 import axiosInstance from "../api/axiosInstance";
 import ReviewForm from "./ReviewForm";
 import ReviewList from "./ReviewList";
@@ -62,18 +62,23 @@ const CoursePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen">
             <Header />
             <div className="p-4">
                 {course ? (
                     <>
-                        <Card className="bg-blue-600 text-white mb-4">
-                            <CardHeader>
+                        <Card className="mb-6">
+                            <CardHeader className="bg-blue-500 h-32"></CardHeader>
+                            <CardContent className="relative pt-16 pb-4">
+                                <div className="absolute -top-16 left-4 w-32 h-32 rounded-full bg-white border-4 border-white shadow-lg flex items-center justify-center">
+                                    <FaGraduationCap className="w-16 h-16 text-gray-700" />
+                                </div>
                                 <CardTitle className="text-2xl font-bold">{course.course_name}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="mt-2">教授: {course.professor_name || "不明"}</p>
-                                <p>学科: {course.department || "不明"}</p>
+                                <p className="text-gray-600">教授: {course.professor_name || "不明"}</p>
+                                <div className="flex items-center mt-2 text-gray-600">
+                                    <FaUniversity className="mr-2" />
+                                    <span>{course.department || "不明"}</span>
+                                </div>
                             </CardContent>
                         </Card>
 
@@ -81,7 +86,7 @@ const CoursePage = () => {
                             <ReviewForm course_id={course_id} onReviewSubmit={handleReviewSubmit} />
                         ) : (
                             <Card className="mb-4">
-                                <CardContent>
+                                <CardContent className="flex items-center justify-center">
                                     <p>この授業への感想と評価は既に投稿済みです。</p>
                                 </CardContent>
                             </Card>

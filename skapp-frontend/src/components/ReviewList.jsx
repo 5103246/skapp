@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import ReplyList from './ReplyList';
 import ReplyForm from './ReplyForm';
-import { MdOutlineReply } from "react-icons/md";
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { FaStar, FaReply, FaEdit, FaTrash } from "react-icons/fa"
+import { MdOutlineCancel, MdOutlineSaveAlt } from "react-icons/md";
 import axiosInstance from '../api/axiosInstance';
 
 
@@ -16,6 +19,16 @@ const ReviewList = ({ reviews, setReviews, replies, setReplies, fetchReplyList, 
         console.log(`Fetching replies for review ID: ${review_id}`);
         // 必要に応じて実際のリプライデータを取得するロジックを追加
     };
+
+    {/* 返信セクションの表示/非表示切り替えボタン */ }
+    const onReply = (review) => {
+        if (selectedReviewId === review.id) {
+            setSelectedReviewId(null); // 返信セクション非表示
+        } else {
+            setSelectedReviewId(review.id); // 返信セクション表示
+            fetchReplies(review.id);
+        }
+    }
 
     // 編集開始
     const startEditing = (review) => {
@@ -81,26 +94,9 @@ const ReviewList = ({ reviews, setReviews, replies, setReplies, fetchReplyList, 
         <section className="container mx-auto my-6">
             <div className="mt-4">
                 <h2 className="text-xl font-semibold mb-4">感想と評価一覧</h2>
-                <ul className="mt-2">
-                    {reviews.map((review) => (
-                        <li key={review.id} className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
-                            {/* 
-                        <p>{review.review_text}</p>
-                        <div className="flex items-center">
-                            <span className="mr-2">評価:</span>
-                            {Array.from({ length: 5 }, (_, index) => (
-                                <span
-                                    key={index}
-                                    className={`text-lg ${index < review.rating
-                                        ? "text-yellow-500"
-                                        : "text-gray-300"
-                                        }`}
-                                >
-                                    ★
-                                </span>
-                            ))}
-                        </div>
-                        <small>投稿者: {review.author_name || "匿名"}</small>*/}
+                {reviews.map((review) => (
+                    <Card key={review.id} className="hover:bg-gray-50 transition duration-200">
+                        <CardContent className="p-4">
                             {/* 感想と評価の編集 */}
                             {editingReviewId === review.id ? (
                                 <div>
@@ -110,62 +106,54 @@ const ReviewList = ({ reviews, setReviews, replies, setReplies, fetchReplyList, 
                                         className="w-full p-2 border rounded"
                                     />
                                     <div className="mt-2">{renderStars()}</div>
-                                    {/* 
-                                <input
-                                    type="number"
-                                    value={editedReview.rating}
-                                    onChange={(e) =>
-                                        setEditedReview((prev) => ({
-                                            ...prev,
-                                            rating: e.target.value,
-                                        }))
-                                    }
-                                />
-                                */}
-                                    <button onClick={() => handleEditSubmit(review.id)} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">Save</button>
-                                    <button onClick={cancelEditing} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">Cancel</button>
+                                    <Button variant="ghost" size="sm" onClick={() => handleEditSubmit(review.id)}>
+                                        <MdOutlineSaveAlt className="mr-2" /> Save
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={cancelEditing}>
+                                        <MdOutlineCancel className="mr-2" /> Cancel
+                                    </Button>
                                 </div>
                             ) : (
-                                <div>
-                                    <div className="flex justify-between items-center">
-                                        <small className="text-lg font-semibold">投稿者: {review.author_name || "匿名"}</small>
-                                        <div className="flex items-center">
-                                            <span className="mr-2">評価:</span>
+                                <div className="flex items-start space-x-3">
+                                    <div className="flex-shrink-0">
+                                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                            <span className="text-gray-600 font-bold">学</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex-grow">
+                                        <div className="flex items-center space-x-2">
+                                            <span className="font-bold">{review.author_name}</span>
+                                            <span className="text-gray-500 text-sm">・</span>
+                                            <span className="text-gray-500 text-sm">{review.created_at}</span>
+                                        </div>
+                                        <p className="mt-1">{review.review_text}</p>
+                                        <div className="flex items-center mt-2 space-x-1">
                                             {Array.from({ length: 5 }, (_, index) => (
-                                                <span
+                                                <FaStar
                                                     key={index}
                                                     className={`text-lg ${index < review.rating
                                                         ? "text-yellow-500"
                                                         : "text-gray-300"
                                                         }`}
-                                                >
-                                                    ★
-                                                </span>
+                                                />
                                             ))}
-                                            <button onClick={() => startEditing(review)} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">編集</button>
-                                            <button onClick={() => handleDelete(review.id)} className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2">削除</button>
+                                        </div>
+                                        <div className="flex items-center justify-between mt-3">
+                                            <Button variant="ghost" size="sm" onClick={() => onReply(review)}>
+                                                <FaReply className="mr-2" /> 返信
+                                            </Button>
+                                            <div>
+                                                <Button variant="ghost" size="sm" onClick={() => startEditing(review)}>
+                                                    <FaEdit className="mr-2" /> 編集
+                                                </Button>
+                                                <Button variant="ghost" size="sm" onClick={() => handleDelete(review.id)}>
+                                                    <FaTrash className="mr-2" /> 削除
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <p className="mt-2 text-gray-700">{review.review_text}</p>
                                 </div>
                             )}
-
-                            {/* 返信セクションの表示/非表示切り替えボタン */}
-                            <button
-                                onClick={() => {
-                                    if (selectedReviewId === review.id) {
-                                        setSelectedReviewId(null); // 返信セクション非表示
-                                    } else {
-                                        setSelectedReviewId(review.id); // 返信セクション表示
-                                        fetchReplies(review.id);
-                                    }
-                                }}
-                                className="text-blue-500 text-sm flex items-center mt-2"
-                            >
-                                <MdOutlineReply className="mr-1" />
-                                返信
-                            </button>
-
                             {/* 返信セクション */}
                             {selectedReviewId === review.id && (
                                 <>
@@ -173,9 +161,9 @@ const ReviewList = ({ reviews, setReviews, replies, setReplies, fetchReplyList, 
                                     <ReplyList review_id={review.id} replies={replies} setReplies={setReplies} fetchReplyList={fetchReplyList} />
                                 </>
                             )}
-                        </li>
-                    ))}
-                </ul>
+                        </CardContent>
+                    </Card>
+                ))}
             </div>
         </section>
     );
