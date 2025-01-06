@@ -5,7 +5,9 @@ const Header = () => {
     return (
         <header className="bg-blue-600 text-white shadow-md">
             <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-                <h1 className="bg-indigo-500 text-xl font-bold">大学授業評価アプリ</h1>
+                <h1 className="text-xl font-bold">
+                    <a href="/home">大学授業評価アプリ</a>
+                </h1>
                 {/* Navigation Links */}
                 <nav className="space-x-4">
                     <ul className="flex space-x-4">

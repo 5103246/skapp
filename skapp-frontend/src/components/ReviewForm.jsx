@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import axiosInstance from "../api/axiosInstance";
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { FaStar } from "react-icons/fa"
 
 const ReviewForm = ({ course_id, onReviewSubmit }) => {
     const [newReview, setNewReview] = useState("");
@@ -24,36 +29,51 @@ const ReviewForm = ({ course_id, onReviewSubmit }) => {
     };
 
     const renderStars = () => {
-        return Array.from({ length: 5 }, (_, index) => (
-            <button
-                key={index}
-                onClick={() => setRating(index + 1)}
-                className={`text-2xl ${index < rating ? "text-yellow-500" : "text-gray-300"
-                    }`}
+        return (
+            <RadioGroup
+                value={rating.toString()}
+                onValueChange={(value) => setRating(Number(value))}
+                className="flex gap-2"
             >
-                ★
-            </button>
-        ));
+                {Array.from({ length: 5 }, (_, index) => (
+                    <Label key={index} htmlFor={`star-${index + 1}`} className="cursor-pointer">
+                        <RadioGroupItem
+                            id={`star-${index + 1}`}
+                            value={(index + 1).toString()}
+                            className="hidden" // 視覚的には隠す
+                            required
+                        />
+                        <FaStar
+                            className={`w-6 h-6 ${index < rating ? "text-yellow-500" : "text-gray-300"}`}
+                        />
+                    </Label>
+                ))}
+            </RadioGroup>
+        );
     };
 
     return (
         <section className="container mx-auto my-6">
             <div className="bg-gray-100 shadow-md rounded-lg p-6">
                 <h2 className="text-xl font-bold mb-4">Submit Your Review</h2>
-                <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-                    <textarea
+                <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+                    <Textarea
                         value={newReview}
                         onChange={(e) => setNewReview(e.target.value)}
-                        className="w-full p-3 rounded-md border border-gray-300"
+                        className="w-full border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-200"
                         placeholder="感想を入力してください..."
+                        required
                     />
-                    <div className="mt-2">{renderStars()}</div>
-                    <button
+                    <div className="mt-2">
+                        <Label className="mb-2 block">評価</Label>
+                        {renderStars()}
+                    </div>
+                    <Button
                         type="submit"
-                        className="bg-blue-500 text-white px-4 py-2 rounded mt-2 rounded-md hover:bg-blue-700"
+                        className="w-full bg-blue-500 hover:bg-blue-600 text-white"
                     >
                         投稿
-                    </button>
+                    </Button>
                 </form>
             </div>
         </section>

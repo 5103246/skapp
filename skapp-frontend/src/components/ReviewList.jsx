@@ -3,6 +3,8 @@ import ReplyList from './ReplyList';
 import ReplyForm from './ReplyForm';
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { FaStar, FaReply, FaEdit, FaTrash } from "react-icons/fa"
 import { MdOutlineCancel, MdOutlineSaveAlt } from "react-icons/md";
 import axiosInstance from '../api/axiosInstance';
@@ -64,16 +66,26 @@ const ReviewList = ({ reviews, setReviews, replies, setReplies, fetchReplyList, 
     };
     // 星評価
     const renderStars = () => {
-        return Array.from({ length: 5 }, (_, index) => (
-            <button
-                key={index}
-                onClick={() => setEditedRating(index + 1)}
-                className={`text-2xl ${index < editedRating ? "text-yellow-500" : "text-gray-300"
-                    }`}
+        return (
+            <RadioGroup
+                value={editedRating.toString()}
+                onValueChange={(value) => setEditedRating(Number(value))}
+                className="flex gap-2"
             >
-                ★
-            </button>
-        ));
+                {Array.from({ length: 5 }, (_, index) => (
+                    <Label key={index} htmlFor={`star-${index + 1}`} className="cursor-pointer">
+                        <RadioGroupItem
+                            id={`star-${index + 1}`}
+                            value={(index + 1).toString()}
+                            className="hidden" // 視覚的には隠す
+                        />
+                        <FaStar
+                            className={`w-6 h-6 ${index < editedRating ? "text-yellow-500" : "text-gray-300"}`}
+                        />
+                    </Label>
+                ))}
+            </RadioGroup>
+        );
     };
 
     // 削除処理 
