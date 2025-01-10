@@ -9,6 +9,6 @@ RUN npm install
 
 COPY . .
 
-CMD ["npm", "start"]
+CMD ["npm", "start", "--", "--port", "3000"]
 
 EXPOSE 3000
