@@ -78,38 +78,6 @@ export const AuthProvider = ({ children }) => {
         fetchCurrentUser();
     }, [refreshToken, logout]);
 
-
-    /*
-    const refreshAccessToken = async () => {
-    try {
-        const response = await axiosInstance.post("/api/token/refresh/", {
-            refresh: localStorage.getItem("refreshToken"),
-        });
-        localStorage.setItem("authToken", response.data.access);
-    } catch (error) {
-        console.error("Failed to refresh access token", error);
-        logout(); // トークンリフレッシュが失敗した場合はログアウト処理
-    }
-};
-    const login = async (credentials) => {
-        try {
-            const response = await axiosInstance.post("/users/token/", {
-                username: credentials.username,
-                password: credentials.password,
-            });
-            const token = response.data.access;
-            localStorage.setItem("access_token", token);
-            setIsAuthenticated(true);
-        } catch (error) {
-            console.error("Login failed", error);
-        }
-    };*/
-    /*
-        const logout = () => {
-            localStorage.removeItem("authToken");
-            setIsAuthenticated(false);
-        }:*/
-
     return (
         <AuthContext.Provider value={{ isAuthenticated, currentUser, setCurrentUser, setIsAuthenticated, login, logout }}>
             {children}
