@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import axiosInstace from "../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import AuthContext from "../auth/AuthContext"
+import AuthContext from "../auth/AuthContext";
 
 
 const Login = () => {
