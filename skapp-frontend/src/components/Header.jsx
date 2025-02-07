@@ -26,11 +26,11 @@ const Header = () => {
                     <div className="md:flex items-center justify-end md:flex-1 lg:w-0">
                         <Link to="/course" className="text-gray-500 hover:text-gray-700 mr-4">
                             <FaList className="inline-block mr-1" />
-                            授業一覧
+                            カテゴリー一覧
                         </Link>
                         <Link to="/mypage" className="text-gray-500 hover:text-gray-700 mr-4">
                             <FaUser className="inline-block mr-1" />
-                            マイページ
+                           マイページ
                         </Link>
                         <Button onClick={handleLogout} variant="ghost" className="text-gray-500 hover:text-gray-700">
                             <FaSignOutAlt className="inline-block mr-1" />
