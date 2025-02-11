@@ -8,11 +8,14 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./:/skapp
+      - ~/.config/gmail_api:/root/.config/gmail_api  # 認証情報の永続化
     environment:
       DB_HOST: db
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+      GMAIL_CREDENTIALS_PATH: "/root/.config/gmail_api/credentials.json"
+      GMAIL_TOKEN_PATH: "/root/.config/gmail_api/token.pickle"
     depends_on:
       db:
         condition: service_healthy

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import axiosInstace from '../api/axiosInstance';
+import axiosInstance from '../api/axiosInstance';
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../auth/AuthContext"
 
@@ -9,6 +9,8 @@ const Register = () => {
         email: "",
         password: "",
     });
+    const [message, setMessage] = useState(""); // 確認メール送信メッセージ
+    const [error, setError] = useState(""); // エラーメッセージ
     const navigate = useNavigate();
     const { currentUser, setCurrentUser } = useContext(AuthContext);
 
@@ -18,16 +20,21 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMessage("");
+        setError("");
+
         try {
-            const response = await axiosInstace.post("/register/", formData);
-            localStorage.setItem("access_token", response.data.access);
-            localStorage.setItem("refresh_token", response.data.refresh);
+            const response = await axiosInstance.post("/register/", formData);
+            setMessage("確認メールを送信しました。メールを確認してください。");
+            //localStorage.setItem("access_token", response.data.access);
+            //localStorage.setItem("refresh_token", response.data.refresh);
             const userResponse = await axiosInstace.get("/auth/user/");
             setCurrentUser(userResponse.data);
             console.log(currentUser);
-            navigate("/home");
+            //navigate("/home");
             console.log("User registered:", response.data);
         } catch (error) {
+            setError("登録に失敗しました。入力内容を確認してください。");
             console.error("Registration error:", error.response.data);
         }
     };
@@ -72,6 +79,8 @@ const Register = () => {
                         </div>
                         <button type="submit" className=" bg-blue-600 text-white shadow-md w-full text-white bg-primary-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Register</button>
                     </form>
+                    {message && <p className="text-green-500 mt-2">{message}</p>}
+                    {error && <p className="text-red-500 mt-2">{error}</p>}
                 </div>
             </div>
         </div>
