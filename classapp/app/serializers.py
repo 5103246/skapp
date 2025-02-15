@@ -2,10 +2,34 @@ from rest_framework import serializers
 from .models import User, Course, Review, Reply
 from rest_framework.exceptions import ValidationError
 from django.contrib.auth import get_user_model
+import re
 
 User = get_user_model()
 
+def validate_email(email):
+    pattern = r'^e\d{7}@soka-u\.jp$'
+    if not re.match(pattern, email):
+        raise ValidationError("大学のメールアドレスを使用してください。")
+
+def validate_password(password):
+    if len(password) < 8:
+        raise ValidationError("パスワードは8文字以上にしてください。")
+    
+    categories = 0
+    if re.search(r'[a-zA-Z]', password):
+        categories += 1
+    if re.search(r'\d', password):
+        categories += 1
+    if re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        categories += 1
+    
+    if categories < 2:
+        raise ValidationError("パスワードはアルファベット、数字、記号の内２種類以上を含めてください。")
+
 class UserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(validators=[validate_email])
+    password = serializers.CharField(write_only=True, validators=[validate_password])
+    
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password']
