@@ -4,11 +4,14 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { FaEdit, FaTrash } from "react-icons/fa"
 import { MdOutlineCancel, MdOutlineSaveAlt } from "react-icons/md";
+import { useAuth } from "../auth/AuthContext";
 
 const ReplyList = ({ review_id, replies, setReplies, fetchReplyList }) => {
     //const [replies, setReplies] = useState([]);
     const [editingReplyId, setEditingReplyId] = useState(null);
     const [editedReply, setEditedReply] = useState("");
+    const { currentUser } = useAuth();
+
     useEffect(() => {
         fetchReplyList(review_id);
     }, [review_id, fetchReplyList]);
@@ -111,14 +114,16 @@ const ReplyList = ({ review_id, replies, setReplies, fetchReplyList }) => {
                                         <span className="text-gray-500 text-sm">{reply.created_at}</span>
                                     </div>
                                     <p className="mt-1">{reply.reply_text}</p>
-                                    <div className="flex items-center justify-end mt-3">
-                                        <Button variant="ghost" size="sm" onClick={() => startEditing(reply)}>
-                                            <FaEdit className="mr-2" /> 編集
-                                        </Button>
-                                        <Button variant="ghost" size="sm" onClick={() => handleDelete(reply.id)}>
-                                            <FaTrash className="mr-2" /> 削除
-                                        </Button>
-                                    </div>
+                                    {currentUser && currentUser.id === reply.author_id && (
+                                        <div className="flex items-center justify-end mt-3">
+                                            <Button variant="ghost" size="sm" onClick={() => startEditing(reply)}>
+                                                <FaEdit className="mr-2" /> 編集
+                                            </Button>
+                                            <Button variant="ghost" size="sm" onClick={() => handleDelete(reply.id)}>
+                                                <FaTrash className="mr-2" /> 削除
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )}

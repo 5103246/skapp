@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { FaStar, FaReply, FaEdit, FaTrash } from "react-icons/fa"
 import { MdOutlineCancel, MdOutlineSaveAlt } from "react-icons/md";
 import axiosInstance from '../api/axiosInstance';
-
+import { useAuth } from "../auth/AuthContext";
 
 
 const ReviewList = ({ reviews, setReviews, replies, setReplies, fetchReplyList, onReplySubmit }) => {
@@ -16,6 +16,7 @@ const ReviewList = ({ reviews, setReviews, replies, setReplies, fetchReplyList, 
     const [editingReviewId, setEditingReviewId] = useState(null);
     const [editedReview, setEditedReview] = useState("");
     const [editedRating, setEditedRating] = useState(0);
+    const { currentUser } = useAuth();
 
     const fetchReplies = (review_id) => {
         console.log(`Fetching replies for review ID: ${review_id}`);
@@ -154,14 +155,16 @@ const ReviewList = ({ reviews, setReviews, replies, setReplies, fetchReplyList, 
                                             <Button variant="ghost" size="sm" onClick={() => onReply(review)}>
                                                 <FaReply className="mr-2" /> 返信
                                             </Button>
-                                            <div>
-                                                <Button variant="ghost" size="sm" onClick={() => startEditing(review)}>
-                                                    <FaEdit className="mr-2" /> 編集
-                                                </Button>
-                                                <Button variant="ghost" size="sm" onClick={() => handleDelete(review.id)}>
-                                                    <FaTrash className="mr-2" /> 削除
-                                                </Button>
-                                            </div>
+                                            {currentUser && currentUser.id === review.author_id && (
+                                                <div>
+                                                    <Button variant="ghost" size="sm" onClick={() => startEditing(review)}>
+                                                        <FaEdit className="mr-2" /> 編集
+                                                    </Button>
+                                                    <Button variant="ghost" size="sm" onClick={() => handleDelete(review.id)}>
+                                                        <FaTrash className="mr-2" /> 削除
+                                                    </Button>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
